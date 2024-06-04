@@ -1,0 +1,37 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Image {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  imagePath String?
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
+  updatedAt DateTime @updatedAt
+}
+
+model PdfDocument {
+  createdAt  DateTime  @default(now())
+  filePath   String?
+  id         String    @id @default(cuid())
+  sections   Section[]
+  updatedAt  DateTime  @updatedAt
+  uploadedAt DateTime?
+}
+
+model Section {
+  content       String?
+  createdAt     DateTime     @default(now())
+  id            String       @id @default(cuid())
+  images        Image[]
+  pdfDocument   PdfDocument? @relation(fields: [pdfDocumentId], references: [id])
+  pdfDocumentId String?
+  title         String?
+  updatedAt     DateTime     @updatedAt
+}
